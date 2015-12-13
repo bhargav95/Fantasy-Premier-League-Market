@@ -1,0 +1,55 @@
+from Tkinter import *
+import tkMessageBox
+import urllib
+import re
+import MySQLdb
+
+ 
+db = MySQLdb.Connect(host="127.0.0.1",port=3306,user="root",db='test')
+# prepare a cursor object using cursor() method
+cursor = db.cursor()
+ 
+def showabout():
+	tkMessageBox.showinfo("About","Fantasy Helper v1.0.0")
+
+	
+def search():
+	x=e1.get()
+	str="select * from fplstats where name=\""+x+"\";";
+	cursor.execute(str)
+	res=cursor.fetchone()
+	id1=res[0]
+	name=res[1]
+	club=res[2]
+	t2.pack()
+	resvar.set(name)
+	root.update_idletasks()
+	
+
+root=Tk()
+resvar=StringVar()
+
+t1=Label(root,text="Player Name")
+t2=Label(root,textvariable=resvar)
+
+menu=Menu(root)
+root.config(menu=menu)
+
+filemenu=Menu(menu,tearoff=False)
+helpmenu=Menu(menu,tearoff=False)
+menu.add_cascade(label='File',menu=filemenu)
+menu.add_cascade(label='Help',menu=helpmenu)
+filemenu.add_command(label='Exit',command=showabout)
+helpmenu.add_command(label='About',command=showabout)
+	
+e1=Entry(root)
+b1=Button(root,text="Search",command=search)
+
+t1.pack()
+e1.pack(side=LEFT)
+b1.pack(side=LEFT)
+ 
+root.mainloop()
+
+# disconnect from server
+db.close()
